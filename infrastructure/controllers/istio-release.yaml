@@ -79,7 +79,5 @@ spec:
   targetNamespace: istio-system
   install:
     createNamespace: true
-  values:
-    service:
-      type: NodePort
+
 
