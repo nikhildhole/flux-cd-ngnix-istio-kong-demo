@@ -7,7 +7,7 @@ spec:
   interval: 1h0m0s
   url: https://istio-release.storage.googleapis.com/charts
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: istio-base
@@ -26,7 +26,7 @@ spec:
   install:
     createNamespace: true
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: istiod
@@ -59,7 +59,7 @@ spec:
         PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_OUTBOUND: "true"
         PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_INBOUND: "true"
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: istio-ingressgateway
