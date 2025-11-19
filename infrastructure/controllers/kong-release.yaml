@@ -26,5 +26,34 @@ spec:
   install:
     createNamespace: true
   values:
+    # DB-less mode
+    env:
+      database: "off"
+      router_flavor: "traditional"
+    # Enable Ingress Controller
+    ingressController:
+      enabled: true
+      installCRDs: false
+    # Proxy service configuration
     proxy:
       type: NodePort
+      http:
+        enabled: true
+        servicePort: 80
+        containerPort: 8000
+        nodePort: 32080
+      tls:
+        enabled: true
+        servicePort: 443
+        containerPort: 8443
+        nodePort: 32443
+    # Admin API
+    admin:
+      enabled: true
+      type: NodePort
+      http:
+        enabled: true
+        servicePort: 8001
+        containerPort: 8001
+        nodePort: 32001
+

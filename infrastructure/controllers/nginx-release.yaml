@@ -29,5 +29,17 @@ spec:
     controller:
       service:
         type: NodePort
+        nodePorts:
+          http: 30080
+          https: 30443
       hostPort:
         enabled: true
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 90Mi
+

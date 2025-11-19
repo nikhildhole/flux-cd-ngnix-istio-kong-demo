@@ -22,17 +22,60 @@ spec:
         kind: HelmRepository
         name: podinfo
         namespace: flux-system
-  targetNamespace: default
+  targetNamespace: demo
   install:
-    createNamespace: true
+    createNamespace: false
   values:
+    replicaCount: 1
     service:
       type: ClusterIP
     ingress:
       enabled: true
       className: nginx
       hosts:
-        - host: podinfo-nginx.local
+        - host: podinfo.local
           paths:
             - path: /
               pathType: ImplementationSpecific
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: podinfo-kong
+  namespace: demo
+  annotations:
+    konghq.com/strip-path: "false"
+spec:
+  ingressClassName: kong
+  rules:
+  - host: podinfo-kong.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: podinfo
+            port:
+              number: 9898
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: podinfo-vs
+  namespace: demo
+spec:
+  hosts:
+  - "podinfo-istio.local"
+  gateways:
+  - istio-system/istio-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: podinfo
+        port:
+          number: 9898
+

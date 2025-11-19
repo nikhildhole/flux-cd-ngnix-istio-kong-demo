@@ -15,7 +15,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: apps
+  name: infrastructure-configs
   namespace: flux-system
 spec:
   interval: 1m0s
@@ -24,6 +24,39 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  path: ./infrastructure/configs
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: apps
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  dependsOn:
+    - name: infrastructure-configs
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/base
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: apps-controllers
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  dependsOn:
+    - name: infrastructure-configs
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
   path: ./apps/controllers
   prune: true
   wait: true
+

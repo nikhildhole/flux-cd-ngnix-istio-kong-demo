@@ -46,6 +46,18 @@ spec:
   targetNamespace: istio-system
   install:
     createNamespace: true
+  values:
+    meshConfig:
+      # Enable access logging for debugging
+      accessLogFile: /dev/stdout
+      # Default config for TCP services
+      defaultConfig:
+        holdApplicationUntilProxyStarts: true
+    pilot:
+      # Enable support for TCP services
+      env:
+        PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_OUTBOUND: "true"
+        PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_INBOUND: "true"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -79,11 +91,19 @@ spec:
         port: 80
         protocol: TCP
         targetPort: 80
+        nodePort: 30080
       - name: https
         port: 443
         protocol: TCP
         targetPort: 443
+        nodePort: 30443
       - name: tcp
         port: 31400
         protocol: TCP
         targetPort: 31400
+        nodePort: 31400
+      - name: tcp-echo
+        port: 9000
+        protocol: TCP
+        targetPort: 9000
+        nodePort: 30900

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+  labels:
+    istio-injection: enabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tcp-echo
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tcp-echo
+  template:
+    metadata:
+      labels:
+        app: tcp-echo
+        version: v1
+    spec:
+      containers:
+      - name: tcp-echo
+        image: docker.io/istio/tcp-echo-server:1.2
+        imagePullPolicy: IfNotPresent
+        args: [ "9000", "hello-istio-tcp" ]
+        ports:
+        - containerPort: 9000
+          name: tcp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcp-echo
+  namespace: demo
+  labels:
+    app: tcp-echo
+spec:
+  ports:
+  - name: tcp
+    port: 9000
+    targetPort: 9000
+    protocol: TCP
+  selector:
+    app: tcp-echo

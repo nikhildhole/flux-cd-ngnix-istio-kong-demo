@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: istio-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  # HTTP traffic
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+  # HTTPS traffic
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    hosts:
+    - "*"
+    tls:
+      mode: PASSTHROUGH
+  # TCP traffic on port 31400
+  - port:
+      number: 31400
+      name: tcp
+      protocol: TCP
+    hosts:
+    - "*"
+  # TCP echo traffic on port 9000
+  - port:
+      number: 9000
+      name: tcp-echo
+      protocol: TCP
+    hosts:
+    - "*"
